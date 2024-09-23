@@ -1,10 +1,19 @@
 <template>
-    <div class="container-fluid m-0 p-0  bg-white">
+    <div class="container-fluid m-0 p-0  doctor-page">
+    <!-- Video Banner -->
+        <div class="video-banner">
+           <video autoplay loop muted playsinline class="w-100">
+            <source src="/istockphoto-1408958950-640_adpp_is.mp4" type="video/mp4">
+          Il tuo browser non supporta i video HTML5.
+           </video>
+        </div>
+
+
         <!-- Banner -->
         <div class="container-fluid px-0 mx-0 bg-banner">
 
 
-            <div class="container bg-banner  ps-4 text-white py-4 d-flex justify-content-between align-items-center">
+            <div class="container bg-banner  ps-4  py-4 d-flex justify-content-between align-items-center">
                 <div class="banner-content">
                     <h1 class="display-4">BDoctors</h1>
                     <p class="lead">Trova i migliori medici vicino a te, specializzati in vari campi della medicina.</p>
@@ -59,60 +68,28 @@
             </div>
 
         </div>
+
+
         <!-- Jumbotron per le Specializzazioni -->
         <div class="container mb-4 text-dark jumbotron p-4 shadow">
-            <h3 class="mb-3">Filtra per Specializzazioni Voti e Recensioni</h3>
+            <h3 class="mb-3">Filtra per Specializzazioni, Voti e Recensioni</h3>
             <div class="search-container">
                 <!-- Lista delle Specializzazioni -->
                 <div class="col-md-12 mb-3">
-                    <div class="specializations-list">
-                        <span v-for="specialization in specializations" :key="specialization.id" :class="{
-                            'badge-specialization': true,
-                            'gold': specialization.level === 'Gold',
-                            'premium': specialization.level === 'Premium',
-                            'basic': specialization.level === 'Basic',
-                            'selected': selectedSpecializations.includes(specialization.name)
-                        }" @click="handleSearch(specialization)">
+                    <div class="specializations-list d-flex flex-wrap">
+                        <span
+                            v-for="specialization in specializations"
+                            :key="specialization.id"
+                            @click="handleSearch(specialization)"
+                            class="specialization-button"
+                        >
                             {{ specialization.name }}
                         </span>
                     </div>
                 </div>
-
-                <!-- Input per il numero minimo e massimo di voti -->
-                <!-- <div class="col-md-6 mb-3">
-                    <div class="row">
-                        <div class="col-6 mb-3">
-                            <label for="min-votes">Numero Minimo di Voti:</label>
-                            <input type="number" id="min-votes" v-model.number="minVotes" class="form-control"
-                                placeholder="Minimo Voti" />
-                        </div>
-                        <div class="col-6 mb-3">
-                            <label for="max-votes">Numero Massimo di Voti:</label>
-                            <input type="number" id="max-votes" v-model.number="maxVotes" class="form-control"
-                                placeholder="Massimo Voti" />
-                        </div>
-                    </div>
-                </div> -->
-
-                <!-- Input per il numero minimo e massimo di recensioni -->
-                <!-- <div class="col-md-6 mb-3">
-                    <div class="row">
-                        <div class="col-6 mb-3">
-                            <label for="min-reviews">Numero Minimo di Recensioni:</label>
-                            <input type="number" id="min-reviews" v-model.number="minReviews" class="form-control"
-                                placeholder="Minimo Recensioni" />
-                        </div>
-                        <div class="col-6 mb-3">
-                            <label for="max-reviews">Numero Massimo di Recensioni:</label>
-                            <input type="number" id="max-reviews" v-model.number="maxReviews" class="form-control"
-                                placeholder="Massimo Recensioni" />
-                        </div>
-                    </div>
-                </div>
-
-                <button class="btn btn-primary mt-3" @click="handleSearch">Filtra</button> -->
             </div>
         </div>
+
 
         <div>
             <h2 class="container text-success">Lista dei Dottori</h2>
@@ -120,28 +97,25 @@
 
         <div class="container" v-if="loading">Caricamento...</div>
         <div class="container" v-else-if="error">Errore: {{ error }}</div>
-        <div v-else class="container-fluid bg-white py-4">
+        <div v-else class="container-fluid bg-banner py-4">
             <div class="container-sm">
                 <div class="row text-dark">
                     <div class="col-12 col-md-6 col-lg-4 py-2 mb-4" v-for="doctor in filteredDoctors" :key="doctor.id">
                         <div class="border p-3 bg-light rounded d-flex flex-column h-100 justify-content-between">
                             <div class="d-flex justify-content-center mb-3 position-relative">
+                              <div class="image-container">
                                 <img v-if="doctor.pic" :src="`${base_url}/storage/images/${doctor.pic}`"
-                                    alt="Immagine del dottore" class="img-fluid" @error="handleImageError" />
+                                     alt="Immagine del dottore" class="img-fluid" @error="handleImageError" />
                                 <img v-else
-                                    src="https://i.pinimg.com/736x/ac/67/4d/ac674d2be5f98abf1c189c75de834155.jpg"
-                                    alt="Immagine del dottore" class="img-fluid" />
-                                <p v-if="doctor.sponsorships[0]?.name === 'Gold'"
-                                    class="d-flex align-items-center m-0 p-0 text-center position-absolute top-25 end-0 sponsor premium p-2 rounded-pill text-dark">
-                                    Sponsorizzato</p>
+                                     src="https://i.pinimg.com/736x/ac/67/4d/ac674d2be5f98abf1c189c75de834155.jpg"
+                                     alt="Immagine del dottore" class="img-fluid" />
+                                <p v-if="doctor.sponsorships[0]" 
+                                   :class="getSponsorshipClass(doctor.sponsorships[0])" class="sponsorship-label">
+                                    Sponsorizzato
+                                </p>
+                              </div>
 
-                                <p v-if="doctor.sponsorships[0]?.name === 'Premium'"
-                                    class="d-flex align-items-center m-0 p-0 text-center position-absolute top-25 end-0 sponsor premium p-2 rounded-pill text-dark">
-                                    Sponsorizzato</p>
 
-                                <p v-if="doctor.sponsorships[0]?.name === 'Basic'"
-                                    class="d-flex align-items-center m-0 p-0 text-center position-absolute top-25 end-0 sponsor premium p-2 rounded-pill text-light text-dark">
-                                    Sponsorizzato</p>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <h2>{{ doctor.surname }}</h2>
@@ -156,49 +130,21 @@
                                 <p>Nessuna specializzazione</p>
                             </div>
                             <ul v-else>
-                                <li v-for="specialization in doctor.specializations" :key="specialization.id" :class="{
-                                    'gold': specialization.level === 'Gold',
-                                    'premium': specialization.level === 'Premium',
-                                    'basic': specialization.level === 'Basic'
-                                }">
+                                <li v-for="specialization in doctor.specializations" :key="specialization.id">
                                     {{ specialization.name }}
                                 </li>
                             </ul>
 
-                            <div v-if="doctor.reviews && doctor.reviews.length > 0">
-                                <!-- Ciclo per visualizzare le stelle -->
-                                <span v-for="n in doctor.reviews[0].stars" :key="n">
-                                    <i class="fa-solid fa-star text-warning"></i>
-                                </span>
-                                <!-- Mostra il numero di stelle -->
-                                <!-- {{ doctor.reviews[0].stars }} -->
-                            </div>
-                            <div v-else>
-                                Nessuna recensione disponibile
-                            </div>
-
-                            <!-- Visualizza i cerchi colorati per le stelle -->
-                            <!-- <div class="review-stars">
-                                <h3>Valutazione Media:</h3>
-                                <div v-if="doctor.reviews[0].stars">
-                                    <span v-for="stella in doctor.reviews[0].stars"> <i
-                                            class="fa-solid fa-star"></i></span>
-                                </div>
-                                <div v-else>
-                                    <p>Nessuna recensione disponibile</p>
-                                </div>
-                            </div> -->
-
-                            <!-- <div v-if="doctor.reviews_avg_stars !== undefined && doctor.reviews_avg_stars !== null">
-                                    <div>
-                                        <i class="fa-solid fa-star" v-for="i in 5"
-                                            :class="{ 'opacity-100': getRating(doctor.reviews_avg_stars) >= i - 1, 'opacity-50': getRating(doctor.reviews_avg_stars) < i - 1 }"></i>
-                                    </div>
-                                    <p>{{ parseFloat(doctor.reviews_avg_stars).toFixed(1) }} su 5</p>
-                                </div> -->
-
-
-
+                            <!-- Ciclo per visualizzare le stelle -->
+                             <div v-if="doctor.reviews && doctor.reviews.length > 0">
+                              <span v-for="n in doctor.reviews[0].stars" :key="n">
+                                <i class="fa-solid fa-star text-warning"></i>
+                              </span>
+                             </div>
+                             <div v-else>
+                               Nessuna recensione disponibile
+                             </div>
+                            
                             <button class="btn btn-info mt-2" @click="goToDoctorDetail(doctor.slug)">
                                 Visualizza Dettagli
                             </button>
@@ -207,13 +153,10 @@
                 </div>
             </div>
 
-            <div class="container">
-                <button @click="loadPrev" v-if="doctors.current_page > 1" class="btn btn-secondary">
-                    Carica precedenti
-                </button>
-                <button @click="loadMore" v-if="doctors.current_page < doctors.last_page" class="btn btn-secondary">
-                    Carica altro
-                </button>
+            <div class="pagination">
+              <button @click="fetchDoctors(currentPage - 1)" :disabled="currentPage === 1">Previous</button>
+                <span>Page {{ currentPage }} of {{ totalPages }}</span>
+              <button @click="fetchDoctors(currentPage + 1)" :disabled="currentPage === totalPages">Next</button>
             </div>
         </div>
     </div>
@@ -230,119 +173,62 @@ export default {
             filteredDoctors: [],
             specializations: [],
             selectedSpecializations: [],
-            loading: true,
-            error: null,
             base_url: 'http://127.0.0.1:8000',
-            page: 1,
-            perPage: 10,
-            searchQuery: '',
-            showSpecializations: true,
-            showOnlySponsored: true // Flag per determinare se mostrare solo i sponsorizzati
+            currentPage: 1,
+            showOnlySponsored: true,
         };
     },
 
-    async created() {
-        await this.fetchDoctors();
-        await this.fetchSpecializations();
+    created() {
+        this.fetchDoctors();
+        this.fetchSpecializations();
     },
 
     methods: {
-        async fetchDoctors() {
+        fetchDoctors() {
             const params = new URLSearchParams(this.$route.query);
-            try {
-                const response = await axios.get(`${this.base_url}/api/doctors`, { params });
-                console.log('Dati della risposta:', response.data);
+            axios.get(`${this.base_url}/api/doctors`, { params })
+                .then(response => {
+                    this.doctors = response.data;
 
-                this.doctors = response.data;
-                // Filtra i dottori in base al flag showOnlySponsored
-                if (this.showOnlySponsored) {
-                    // Mostra solo dottori con sponsorizzazioni non "None"
-                    this.filteredDoctors = this.doctors.filter(doctor => {
-                        return doctor.sponsorships.length > 0 && doctor.sponsorships[0].name !== 'None';
-                    });
-                } else {
-                    // Mostra tutti i dottori
-                    this.filteredDoctors = this.doctors;
-                }
-
-            } catch (error) {
-                console.error('Errore:', error);
-                this.error = 'Errore nel recupero dei dati.';
-            } finally {
-                this.loading = false;
-            }
+                    this.filteredDoctors = this.showOnlySponsored 
+                        ? this.doctors.filter(doctor => doctor.sponsorships.length > 0 && doctor.sponsorships[0].name !== 'None')
+                        : this.doctors;
+                })
+                .catch(error => {
+                    console.error('Errore:', error);
+                });
         },
 
-        async fetchSpecializations() {
-            try {
-                const response = await axios.get(`${this.base_url}/api/specializations`);
-                console.log('Specializzazioni:', response.data);
-                this.specializations = response.data;
-            } catch (error) {
-                console.error('Errore nel recupero delle specializzazioni:', error);
-                this.error = 'Errore nel recupero delle specializzazioni.';
-            }
+        fetchSpecializations() {
+            axios.get(`${this.base_url}/api/specializations`)
+                .then(response => {
+                    this.specializations = response.data;
+                })
+                .catch(error => {
+                    console.error('Errore nel recupero delle specializzazioni:', error);
+                });
         },
 
         filterDoctorsBySpecialization() {
-            if (this.selectedSpecializations.length > 0) {
-                this.filteredDoctors = this.doctors.filter(doctor =>
+            this.filteredDoctors = this.selectedSpecializations.length > 0
+                ? this.doctors.filter(doctor =>
                     doctor.specializations && doctor.specializations.some(specialization =>
                         this.selectedSpecializations.includes(specialization.name)
                     )
-                );
-            } else {
-                this.filteredDoctors = this.doctors;
-            }
-        },
-
-        async loadMore() {
-            this.page++;
-            await this.fetchDoctors();
-        },
-
-        async loadPrev() {
-            if (this.page > 1) {
-                this.page--;
-                await this.fetchDoctors();
-            }
+                )
+                : this.doctors;
         },
 
         handleSearch(specialization) {
-            // Verifica se la specializzazione è già selezionata
             const index = this.selectedSpecializations.indexOf(specialization.name);
             if (index === -1) {
-                // Aggiungi la specializzazione se non è selezionata
                 this.selectedSpecializations.push(specialization.name);
             } else {
-                // Rimuovi la specializzazione se è già selezionata (toggle)
                 this.selectedSpecializations.splice(index, 1);
             }
 
-            // Aggiorna i parametri di ricerca nell'URL
-            const params = new URLSearchParams();
-            this.selectedSpecializations.forEach(specialization => {
-                params.append('specializations[]', specialization);
-            });
-
-            this.$router.push({
-                name: 'search',
-                query: {
-                    ...Object.fromEntries(params)
-                }
-            }).catch(err => {
-                console.error('Errore nel reindirizzamento:', err);
-            });
-
-            // Filtra i medici per specializzazione
             this.filterDoctorsBySpecialization();
-        }
-        ,
-
-        handleKeypress(event) {
-            if (event.key === 'Enter') {
-                this.handleSearch();
-            }
         },
 
         goToDoctorDetail(slug) {
@@ -354,8 +240,7 @@ export default {
         },
 
         getStarClass(index, rating) {
-            if (rating === null) return 'star-circle grey'; // Nessuna recensione
-            return index <= Math.round(rating) ? 'star-circle filled' : 'star-circle empty';
+            return rating === null ? 'star-circle grey' : (index <= Math.round(rating) ? 'star-circle filled' : 'star-circle empty');
         },
 
         toggleSpecialization(name) {
@@ -366,7 +251,16 @@ export default {
                 this.selectedSpecializations.splice(index, 1);
             }
             this.filterDoctorsBySpecialization();
+        },
+
+        getSponsorshipClass(sponsorship) {
+          return {
+           'gold': sponsorship.name === 'Gold',
+           'premium': sponsorship.name === 'Premium',
+           'basic': sponsorship.name === 'Basic'
+          };
         }
+
     },
 
     mounted() {
@@ -379,6 +273,8 @@ export default {
 
 
 
+
+
 <style scoped>
 .img-fluid {
     max-width: 100%;
@@ -386,7 +282,7 @@ export default {
 }
 
 .jumbotron {
-    background-color: #f8f9fa;
+    background-color: #F8F8FF;
     border-radius: 0.5rem;
     padding: 2rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -396,43 +292,32 @@ export default {
     margin: 0.5rem;
 }
 
-.search-container {
-    display: flex;
-    flex-wrap: wrap;
-}
-
 .specializations-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: 20px; /* Spaziatura tra i pulsanti */
+
 }
 
-.badge-specialization {
-    display: inline-block;
-    padding: 0.5rem 1rem;
-    border-radius: 1.5rem;
+.specialization-button {
     cursor: pointer;
-    font-size: 1rem;
+    padding: 10px 15px; /* Spaziatura interna */
+    border-radius: 5px; /* Angoli arrotondati */
+    background-color: #98FF98; /* Colore uniforme per tutti i pulsanti */
+    color: #333333; /* Colore del testo */
+    transition: background-color 0.3s, transform 0.2s; /* Transizione per effetto hover */
 }
 
-.badge-specialization.gold {
-    background-color: #FFD700;
-    color: #000;
+.specialization-button:hover {
+    transform: scale(1.05); /* Leggera ingrandimento al passaggio del mouse */
+    background-color: #0056b3; /* Colore scuro al passaggio del mouse */
+    color: #F8F8FF;
 }
 
-.badge-specialization.premium {
-    background-color: #D7DEDC;
-    color: #000;
-}
 
-.badge-specialization.basic {
-    background-color: #0A8754;
-    color: #fff;
-}
 
-.badge-specialization.selected {
-    border: 2px solid #000;
-}
+
+
 
 .stars {
     display: flex;
@@ -464,28 +349,25 @@ export default {
     /* Colore grigio per nessuna recensione */
 }
 
-.sponsor {
-    top: 5%;
-    right: 2.5% !important;
-    background-color: rgb(206, 37, 102);
+.image-container {
+    position: relative;
+    display: inline-block; /* Questo assicura che il contenitore si adatti all'immagine */
 }
 
-.gold {
-    background-color: #FFD700;
+.sponsorship-label {
+    position: absolute;
+    top: 10px; /* Regola in base a quanto vuoi spostare il testo dall'alto */
+    right: 10px; /* Regola in base a quanto vuoi spostare il testo da destra */
+    background-color: rgba(255, 255, 255, 0.7); /* Sfondo semi-trasparente per la leggibilità */
+    padding: 5px;
+    border-radius: 5px; /* Angoli arrotondati */
 }
 
-.premium {
-    background-color: #D7DEDC;
-}
-
-.basic {
-    background-color: #0A8754;
-}
 
 /* Stile per il banner */
 .bg-banner {
-    background-color: #007bff;
-    color: white;
+    background-color:  #87CEEB;
+    color:#333333;
 }
 
 .banner-content h1 {
@@ -633,6 +515,24 @@ export default {
   .main {
     align-items: center; /* Centra gli elementi */
   }
+}
+
+/* Stile del video banner */
+.video-banner video {
+  height: 500px; /* Altezza personalizzata per il banner */
+  object-fit: cover; /* Adatta il video per coprire l'intero spazio */
+}
+
+/* Stile del banner principale */
+.bg-banner {
+  background-color: #87CEEB; /* Sostituisci con il colore desiderato */
+  color:  #333333;
+}
+
+.doctor-page {
+  background-color: #87CEEB; /* Verde della palette */
+  color: #2ecc71; /* Bianco per i testi se necessario */
+  min-height: 100vh; /* Assicurati che l'altezza occupi almeno l'intera finestra */
 }
 
 </style>

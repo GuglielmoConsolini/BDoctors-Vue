@@ -76,27 +76,7 @@
         <div v-if="loading">Caricamento...</div>
         <div v-else-if="error">Errore: {{ error }}</div>
         <div v-else>
-            <!-- Jumbotron per le Specializzazioni -->
-            <!-- <div class="container my-4 text-dark jumbotron p-4 shadow">
-                <h3 class="mb-3">Filtra per Specializzazioni</h3>
-                <div class="specializations-container">
-                    <div class="row">
-                        <div class="col-md-4 mb-3" v-for="specialization in specializations" :key="specialization.id">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" :id="specialization.id"
-                                    :value="specialization.name" v-model="selectedSpecializations" />
-                                <label class="form-check-label" :for="specialization.id">
-                                    {{ specialization.name }}
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <button class="btn btn-primary mt-3" @click="handleSearch">Filtra</button>
-            </div> -->
-
-
-
+            
             <!-- Jumbotron per le Specializzazioni -->
             <div class="container mb-4 text-dark jumbotron p-4 shadow">
                 <h3 class="mb-3">Filtra per Specializzazioni Voti e Recensioni</h3>
@@ -116,39 +96,7 @@
                         </div>
                     </div>
 
-                    <!-- Input per il numero minimo e massimo di voti -->
-                    <!-- <div class="col-md-6 mb-3">
-                    <div class="row">
-                        <div class="col-6 mb-3">
-                            <label for="min-votes">Numero Minimo di Voti:</label>
-                            <input type="number" id="min-votes" v-model.number="minVotes" class="form-control"
-                                placeholder="Minimo Voti" />
-                        </div>
-                        <div class="col-6 mb-3">
-                            <label for="max-votes">Numero Massimo di Voti:</label>
-                            <input type="number" id="max-votes" v-model.number="maxVotes" class="form-control"
-                                placeholder="Massimo Voti" />
-                        </div>
-                    </div>
-                </div> -->
-
-                    <!-- Input per il numero minimo e massimo di recensioni -->
-                    <!-- <div class="col-md-6 mb-3">
-                    <div class="row">
-                        <div class="col-6 mb-3">
-                            <label for="min-reviews">Numero Minimo di Recensioni:</label>
-                            <input type="number" id="min-reviews" v-model.number="minReviews" class="form-control"
-                                placeholder="Minimo Recensioni" />
-                        </div>
-                        <div class="col-6 mb-3">
-                            <label for="max-reviews">Numero Massimo di Recensioni:</label>
-                            <input type="number" id="max-reviews" v-model.number="maxReviews" class="form-control"
-                                placeholder="Massimo Recensioni" />
-                        </div>
-                    </div>
-                </div>
-
-                <button class="btn btn-primary mt-3" @click="handleSearch">Filtra</button> -->
+                    
                 </div>
             </div>
 
@@ -199,28 +147,7 @@
                             <div v-else>
                                 Nessuna recensione disponibile
                             </div>
-                            <!-- <div class="review-stars">
-                                        <h3>Valutazione Media:</h3>
-                                        <div v-if="doctor.reviews[0].stars">
-                                            <span v-for="stella in doctor.reviews[0].stars"> <i
-                                                    class="fa-solid fa-star"></i></span>
-                                        </div>
-                                        <div v-else>
-                                            <p>Nessuna recensione disponibile</p>
-                                        </div>
-                                    
-                                    </div> -->
-
-                            <!-- <div v-if="doctor.reviews_avg_stars !== undefined && doctor.reviews_avg_stars !== null">
-                                    <div>
-                                        <i class="fa-solid fa-star" v-for="i in 5"
-                                            :class="{ 'opacity-100': getRating(doctor.reviews_avg_stars) >= i - 1, 'opacity-50': getRating(doctor.reviews_avg_stars) < i - 1 }"></i>
-                                    </div>
-                                    <p>{{ parseFloat(doctor.reviews_avg_stars).toFixed(1) }} su 5</p>
-                                </div> -->
-
-
-
+                    
                             <!-- Specializzazioni -->
                             <h3 v-if="doctor.specializations && doctor.specializations.length > 0">
                                 Specializzazioni:
@@ -308,26 +235,7 @@ export default {
                 this.error = 'Errore nel recupero delle specializzazioni.';
             }
         },
-        // handleSearch() {
-        //     // Aggiorna la query con le specializzazioni selezionate
-        //     const params = new URLSearchParams();
-        //     this.selectedSpecializations.forEach(specialization => {
-        //         params.append('specializations[]', specialization);
-        //     });
-
-        //     this.$router.push({
-        //         name: 'search',
-        //         query: {
-        //             ...Object.fromEntries(params)
-        //         }
-        //     }).catch(err => {
-        //         console.error('Errore nel reindirizzamento:', err);
-        //     });
-
-        //     // Filtra i dottori in base alla specializzazione selezionata
-        //     this.filterDoctorsBySpecialization();
-        // },
-
+        
         handleSearch(specialization) {
             // Verifica se la specializzazione è già selezionata
             const index = this.selectedSpecializations.indexOf(specialization.name);
@@ -357,11 +265,6 @@ export default {
             // Filtra i medici per specializzazione
             this.filterDoctorsBySpecialization();
         },
-
-
-
-
-
 
         filterDoctorsBySpecialization() {
             if (this.selectedSpecializations.length > 0) {
