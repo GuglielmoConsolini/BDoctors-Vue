@@ -4,7 +4,7 @@
         <div class="container-fluid px-0 mx-0 bg-banner">
 
 
-            <div class="container bg-banner ps-4 text-white py-4 d-flex justify-content-between align-items-center">
+            <div class="container bg-banner  ps-4 text-white py-4 d-flex justify-content-between align-items-center">
                 <div class="banner-content">
                     <h1 class="display-4">BDoctors</h1>
                     <p class="lead">Trova i migliori medici vicino a te, specializzati in vari campi della medicina.</p>
@@ -617,4 +617,22 @@ export default {
 .card4:hover .discord {
     fill: white;
 }
+
+@media (max-width: 410px) {
+  .media {
+    flex-direction: column; /* Dispone gli elementi verticalmente */
+  }
+
+  .banner-content, 
+  .main {
+    
+    width: 100%; /* Assicura che gli elementi occupino tutta la larghezza del contenitore */
+    margin-bottom: 20px; /* Aggiunge spazio tra gli elementi */
+  }
+
+  .main {
+    align-items: center; /* Centra gli elementi */
+  }
+}
+
 </style>
