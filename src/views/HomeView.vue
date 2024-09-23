@@ -81,7 +81,7 @@
                             v-for="specialization in specializations"
                             :key="specialization.id"
                             @click="handleSearch(specialization)"
-                            class="specialization-button"
+                            :class="['specialization-button', { 'active': selectedSpecializations.includes(specialization.name) }]"
                         >
                             {{ specialization.name }}
                         </span>
@@ -211,23 +211,50 @@ export default {
         },
 
         filterDoctorsBySpecialization() {
-            this.filteredDoctors = this.selectedSpecializations.length > 0
-                ? this.doctors.filter(doctor =>
-                    doctor.specializations && doctor.specializations.some(specialization =>
-                        this.selectedSpecializations.includes(specialization.name)
-                    )
-                )
-                : this.doctors;
-        },
+    const selectedParams = this.params['specializations[]'];
+
+    // Usa i parametri della query se esistono, altrimenti usa le specializzazioni selezionate
+    const specializationsToFilter = selectedParams ? selectedParams : this.selectedSpecializations;
+
+    if (specializationsToFilter.length > 0) {
+        this.filteredDoctors = this.doctors.filter(doctor =>
+            doctor.specializations && doctor.specializations.some(specialization =>
+                specializationsToFilter.includes(specialization.name)
+            )
+        );
+    } else {
+        this.filteredDoctors = this.doctors;
+    }
+},
+
 
         handleSearch(specialization) {
+            // Verifica se la specializzazione è già selezionata
             const index = this.selectedSpecializations.indexOf(specialization.name);
             if (index === -1) {
+                // Aggiungi la specializzazione se non è selezionata
                 this.selectedSpecializations.push(specialization.name);
             } else {
+                // Rimuovi la specializzazione se è già selezionata (toggle)
                 this.selectedSpecializations.splice(index, 1);
             }
 
+            // Aggiorna i parametri di ricerca nell'URL
+            const params = new URLSearchParams();
+            this.selectedSpecializations.forEach(specialization => {
+                params.append('specializations[]', specialization);
+            });
+
+            this.$router.push({
+                name: 'search',
+                query: {
+                    ...Object.fromEntries(params)
+                }
+            }).catch(err => {
+                console.error('Errore nel reindirizzamento:', err);
+            });
+
+            // Filtra i medici per specializzazione
             this.filterDoctorsBySpecialization();
         },
 
@@ -269,12 +296,6 @@ export default {
 };
 </script>
 
-
-
-
-
-
-
 <style scoped>
 .img-fluid {
     max-width: 100%;
@@ -314,10 +335,11 @@ export default {
     color: #F8F8FF;
 }
 
-
-
-
-
+.active{
+    transform: scale(1.05); /* Leggera ingrandimento al passaggio del mouse */
+    background-color: #0056b3; /* Colore scuro al passaggio del mouse */
+    color: #F8F8FF;
+}
 
 .stars {
     display: flex;
