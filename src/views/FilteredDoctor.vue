@@ -1,6 +1,8 @@
 <template>
     
-
+    <div v-if="loading" class="loader-container">
+      <div class="loader"></div>
+    </div>
 
     <div class="container-fluid m-0 p-0 pt-2 bg-white altezza">
         <div class="position-relative container d-flex">
@@ -14,9 +16,7 @@
             </h2>
         </div>
 
-        <div v-if="loading">Caricamento...</div>
-        <div v-else-if="error">Errore: {{ error }}</div>
-        <div v-else>
+        
             
             <!-- Jumbotron per le Specializzazioni -->
         <div class="container mb-4 text-dark jumbotron p-4 shadow">
@@ -29,8 +29,7 @@
                             v-for="specialization in specializations"
                             :key="specialization.id"
                             @click="handleSearch(specialization)"
-                            :class="['specialization-button', { 'active': selectedSpecializations.includes(specialization.name) }]"
-                        >
+                            :class="['specialization-button', { 'active': selectedSpecializations.includes(specialization.name) }]">
                             {{ specialization.name }}
                         </span>
                     </div>
@@ -107,7 +106,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        
     </div>
 </template>
 
@@ -135,17 +134,20 @@ export default {
         }
     },
     created() {
-        this.fetchDoctors();
-        this.fetchSpecializations();
+    this.fetchDoctors();
+    this.fetchSpecializations();
 
-        // Imposta selectedSpecializations in base ai parametri della query
+    // Imposta selectedSpecializations in base ai parametri della query
     const selectedParams = this.$route.query['specializations[]'];
+
     if (Array.isArray(selectedParams)) {
         this.selectedSpecializations = selectedParams;
     } else if (selectedParams) {
+        // Gestione del caso in cui il parametro sia una stringa singola
         this.selectedSpecializations = [selectedParams];
     }
     },
+
     methods: {
         handleImageError(event) {
             event.target.src = 'https://i.pinimg.com/736x/ac/67/4d/ac674d2be5f98abf1c189c75de834155.jpg';
@@ -154,6 +156,7 @@ export default {
             return Math.round(rating / 2);
         },
         fetchDoctors() {
+            this.loading = true; // Mostra il loader
             axios.get(`${this.base_url}/api/doctors`)
                 .then(response => {
                     this.doctors = response.data;
@@ -204,18 +207,24 @@ export default {
         },
 
         filterDoctorsBySpecialization() {
-    const selectedParams = this.params['specializations[]'] || [];
+    let selectedParams = this.params['specializations[]'];
 
-    if (selectedParams.length > 0) {
+    if (selectedParams) {
+        // Se il parametro non è un array, trasformalo in un array
+        if (!Array.isArray(selectedParams)) {
+            selectedParams = [selectedParams];
+        }
         this.filteredDoctors = this.doctors.filter(doctor =>
             doctor.specializations && doctor.specializations.some(specialization =>
                 selectedParams.includes(specialization.name)
             )
         );
     } else {
+        // Se non ci sono filtri, mostra tutti i dottori
         this.filteredDoctors = this.doctors;
     }
 },
+
 
         
         goToDoctorDetail(slug) {
@@ -313,6 +322,27 @@ export default {
     background-color: rgba(255, 255, 255, 0.7); /* Sfondo semi-trasparente per la leggibilità */
     padding: 5px;
     border-radius: 5px; /* Angoli arrotondati */
+}
+
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Rendi il loader centrato verticalmente */
+}
+
+.loader {
+  border: 8px solid #f3f3f3; /* Light gray */
+  border-top: 8px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 
