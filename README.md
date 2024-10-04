@@ -1,29 +1,23 @@
-# bdoctors-vue
+ # BDoctors Frontoffice - Ricerca e Dettaglio Medici
+ 
+BDoctors Frontoffice è un'applicazione frontend sviluppata con Vue.js che consente agli utenti di visualizzare i medici registrati nel sistema e filtrare per specializzazione. I medici che hanno acquistato una sponsorizzazione sono evidenziati nella homepage. Gli utenti possono accedere ai dettagli dei medici, inviare loro messaggi privati e lasciare recensioni. L'applicazione utilizza Vue Snackbar per fornire notifiche di conferma all'invio di recensioni e messaggi.
 
-This template should help get you started developing with Vue 3 in Vite.
+## Caratteristiche principali
 
-## Recommended IDE Setup
+Visualizzazione dei medici: Mostra tutti i medici disponibili nel database.
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+Filtri per specializzazioni: Gli utenti possono filtrare i medici in base alle loro specializzazioni.
 
-## Customize configuration
+Homepage con medici sponsorizzati: I medici che hanno acquistato una sponsorizzazione sono visibili nella homepage.
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+Dettagli medico: Ogni medico ha una pagina di dettaglio che include biografia, specializzazioni, contatti e recensioni.
 
-## Project Setup
+Recensioni e messaggi: Gli utenti possono inviare recensioni e messaggi ai medici direttamente dalla loro pagina di dettaglio.
 
-```sh
-npm install
-```
+Notifiche Snackbar: Utilizzo della libreria Vue Snackbar per confermare l'invio di messaggi e recensioni.
 
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
+## Tecnologie utilizzate
+Frontend: Vue.js 
+Router: Vue Router
+UI: Bootstrap 
+Notifiche: Vue Snackbar
